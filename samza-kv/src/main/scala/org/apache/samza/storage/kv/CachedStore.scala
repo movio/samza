@@ -73,6 +73,7 @@ class CachedStore[K, V](
             flush()
           } else {
             debug("Found a dirty entry. Calling putAll() on all dirty entries.")
+            metrics.flushesAvoided.inc()
             putAllDirtyEntries()
           }
         }
@@ -175,7 +176,7 @@ class CachedStore[K, V](
     // putAll() dirty values if the write list is full.
     if (dirtyCount >= writeBatchSize) {
       debug("Dirty count %s >= write batch size %s. Calling putAll() on all dirty entries." format (dirtyCount, writeBatchSize))
-
+      metrics.flushesAvoided.inc()
       putAllDirtyEntries()
     }
   }
